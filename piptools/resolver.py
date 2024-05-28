@@ -192,6 +192,7 @@ class LegacyResolver(BaseResolver):
         clear_caches: bool = False,
         allow_unsafe: bool = False,
         unsafe_packages: set[str] | None = None,
+        exclude: set[str] | None = None,
     ) -> None:
         """
         This class resolves a given set of constraints (a collection of
@@ -207,6 +208,7 @@ class LegacyResolver(BaseResolver):
         self.allow_unsafe = allow_unsafe
         self.unsafe_constraints: set[InstallRequirement] = set()
         self.unsafe_packages = unsafe_packages or UNSAFE_PACKAGES
+        self.exclude = exclude
 
         options = self.repository.options
         if "legacy-resolver" not in options.deprecated_features_enabled:
@@ -469,6 +471,14 @@ class LegacyResolver(BaseResolver):
                 ", ".join(sorted(dependency_strings, key=lambda s: s.lower())) or "-",
             )
         )
+
+        if self.exclude:
+            dep_set, exclude_set = set(dependency_strings), set(self.exclude)
+            log.info('Excluding following dependencies:')
+            for exclude in (dep_set & exclude_set):
+                log.debug('  {}'.format(exclude))
+            dependency_strings = dep_set - exclude_set
+
         # This yields new InstallRequirements that are similar to those that
         # produced the dependency_strings, but they lack `markers` on their
         # underlying Requirements:

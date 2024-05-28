@@ -11,7 +11,7 @@ from piptools.resolver import RequirementSummary, combine_install_requirements
 @pytest.mark.parametrize(
     ("input", "expected", "prereleases", "unsafe_constraints"),
     (
-        (tup + (False, set())[len(tup) - 2 :])
+        (tup + (False, set())[len(tup) - 2:])
         for tup in [
             (["Django"], ["django==1.8"]),
             (

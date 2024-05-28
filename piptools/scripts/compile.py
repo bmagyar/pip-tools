@@ -122,6 +122,7 @@ def _determine_linesep(
 @options.build_deps_for
 @options.all_build_deps
 @options.only_build_deps
+@options.exclude
 def cli(
     ctx: click.Context,
     color: bool | None,
@@ -167,6 +168,7 @@ def cli(
     build_deps_targets: tuple[BuildTargetT, ...],
     all_build_deps: bool,
     only_build_deps: bool,
+    exclude: tuple[str, ...],
 ) -> None:
     """
     Compiles requirements.txt from requirements.in, pyproject.toml, setup.cfg,
@@ -473,6 +475,7 @@ def cli(
             clear_caches=rebuild,
             allow_unsafe=allow_unsafe,
             unsafe_packages=set(unsafe_package),
+            exclude=set(exclude),
         )
         results = resolver.resolve(max_rounds=max_rounds)
         hashes = resolver.resolve_hashes(results) if generate_hashes else None
