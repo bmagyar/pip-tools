@@ -498,7 +498,8 @@ class BacktrackingResolver(BaseResolver):
         repository: BaseRepository,
         allow_unsafe: bool = False,
         unsafe_packages: set[str] | None = None,
-        **kwargs: Any,
+        exclude: set[str] | None = None,
+        ** kwargs: Any,
     ) -> None:
         self.constraints = list(constraints)
         self.repository = repository
@@ -512,6 +513,7 @@ class BacktrackingResolver(BaseResolver):
         self.unsafe_constraints: set[InstallRequirement] = set()
 
         self.existing_constraints = existing_constraints
+        self.exclude = exclude
 
         # Categorize InstallRequirements into sets by key
         constraints_sets: DefaultDict[str, set[InstallRequirement]] = (
